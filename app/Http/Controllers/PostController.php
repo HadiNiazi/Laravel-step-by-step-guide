@@ -15,7 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return "I am running from resource";
+        $posts = Post::simplePaginate(5);
+        return view('post.index', compact('posts'));
     }
 
     /**
@@ -25,7 +26,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        return view('post.create');
     }
 
     /**
@@ -37,15 +38,22 @@ class PostController extends Controller
     public function store(CreateRequest $createRequest)
     {
         // Post::create( $request->all() );
+        $image = $createRequest->image;
+        if($image) {
+            $extention = $image->getClientOriginalExtension();
+            $imageName = time(). '.'.$extention;
+            $image->move(public_path('/images/posts'), $imageName);
+        }
+
         Post::create([
             'title' => $createRequest->title,
             'description' => $createRequest->description,
             'is_publish' => $createRequest->is_publish,
-            'status' => $createRequest->status,
-            'user_id' => 1
+            'status' => 0,
+            'image' => $createRequest->image ? $imageName: '0.png'
         ]);
 
-        return "Success";
+        return redirect('posts');
     }
 
     /**
@@ -54,9 +62,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        //
+        return view('post.show', ['post' => $post]);
     }
 
     /**
@@ -67,7 +75,8 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        return view('post.edit', compact('post'));
     }
 
     /**
@@ -77,9 +86,20 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $postId = $request->post_id;
+        $post = Post::find($postId);
+
+        if($post){
+            $post->update([
+                'title' => $request->title,
+                'description' => $request->description,
+                'is_publish' => $request->is_publish,
+                'status' => $request->status,
+            ]);
+        }
+        return redirect()->route('post.index');
     }
 
     /**
@@ -90,6 +110,12 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Post::findOrFail($id)->delete();
+        return redirect()->route('post.index');
+    }
+    public function restore()
+    {
+        Post::withTrashed()->restore();
+        return redirect()->route('post.index');
     }
 }

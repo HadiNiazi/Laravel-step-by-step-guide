@@ -17,10 +17,10 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->string('title');
             $table->longText('description');
+            $table->text('image');
             $table->integer('is_publish')->default(0);
             $table->timestamps();
-
-            $table->foreignId('user_id')->constrained();
+            $table->softDeletes();
         });
 
 
@@ -33,6 +33,10 @@ class CreatePostsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        // Schema::dropIfExists('posts');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+            $table->dropIfExists('posts');
+        });
     }
 }

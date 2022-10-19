@@ -27,7 +27,6 @@ class CreateRequest extends FormRequest
             'title' => 'required|string|unique:posts,title',
             'description' => 'required|min:5|max:3000',
             'is_publish' => 'required|integer',
-            'status' => 'required|integer'
         ];
     }
 }

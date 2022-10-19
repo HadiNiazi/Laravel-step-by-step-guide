@@ -6,10 +6,6 @@
 @yield('styles')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-
-
-</head>
-
 <style type="text/css">
   #wrapper {
     padding-left: 0;
@@ -135,7 +131,7 @@ a:hover {
   color: white !important;
 }
 </style>
-
+</head>
 
 <body>
 
@@ -220,6 +216,8 @@ a:hover {
         $("#wrapper").toggleClass("toggled");
     });
 </script>
+
+@yield('scripts')
 
 </body>
 </html>
